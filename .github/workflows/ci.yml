@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build_matrix:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build Linux x64
+      run: cargo build --release --target-dir build
+    - name: Publish artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build
+        path: |
+          app/whatstheweather/build/release/whatstheweather/build/whatstheweather
+          app/whatstheweather/build/release/whatstheweather/build/whatstheweather.exe
