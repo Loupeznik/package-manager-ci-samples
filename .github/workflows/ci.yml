@@ -21,6 +21,7 @@ jobs:
       run: cargo build --release --target-dir build
       working-directory: app/whatstheweather
     - name: Publish artifact
+      if: ${{ github.event_name != 'pull_request'}}
       uses: actions/upload-artifact@v3
       with:
         name: build
