@@ -25,5 +25,5 @@ jobs:
       with:
         name: build
         path: |
-          app/whatstheweather/build/release/whatstheweather/build/whatstheweather
-          app/whatstheweather/build/release/whatstheweather/build/whatstheweather.exe
+          app/whatstheweather/build/release/whatstheweather
+          app/whatstheweather/build/release/whatstheweather.exe
