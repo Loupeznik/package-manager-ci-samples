@@ -47,9 +47,10 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v4.1.1
         with:
-          context: /app/whatstheweather
+          context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          file: app/whatstheweather/Dockerfile
 
       - name: Sign the published Docker image
         env:
