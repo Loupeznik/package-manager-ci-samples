@@ -17,12 +17,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
-    - name: Build Linux x64
+    - name: Build
       run: cargo build --release --target-dir build
+      working-directory: app/whatstheweather
     - name: Publish artifact
       uses: actions/upload-artifact@v3
       with:
         name: build
         path: |
-          app/whatstheweather/build/release/whatstheweather/build/whatstheweather
-          app/whatstheweather/build/release/whatstheweather/build/whatstheweather.exe
+          build/release/whatstheweather/build/whatstheweather
+          build/release/whatstheweather/build/whatstheweather.exe
+        working-directory: app/whatstheweather
