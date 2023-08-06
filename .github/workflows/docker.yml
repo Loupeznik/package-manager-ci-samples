@@ -49,8 +49,6 @@ jobs:
           context: /app/whatstheweather
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Sign the published Docker image
         env:
