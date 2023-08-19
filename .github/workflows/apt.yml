@@ -12,11 +12,10 @@ permissions:
   
 jobs:
   build:
-    name: Create .deb
+    name: Build deb
     runs-on: ubuntu-latest
     env:
       APP_NAME: 'whatstheweather'
-      APP_VERSION: ${{ github.ref_name }}
       BUILD_ARCH: 'amd64'
 
     steps:
@@ -33,7 +32,9 @@ jobs:
 
     - name: Create deb
       run: |
-        APP_ID=${{ env.APP_NAME }}_${{ env.APP_VERSION }}_${{ env.BUILD_ARCH }}
+        REF=${{ github.ref_name }}
+        APP_VERSION=${REF//v/}
+        APP_ID=${{ env.APP_NAME }}_$APP_VERSION_${{ env.BUILD_ARCH }}
         TMP_DIR=/tmp/$APP_ID
         APP_DIR=$TMP_DIR/usr/local/bin/${{ env.APP_NAME }}
         mkdir -p $APP_DIR
@@ -42,7 +43,7 @@ jobs:
         
         cat <<EOF > $TMP_DIR/DEBIAN/control
         Package: ${{ env.APP_NAME }}
-        Version: ${{ env.APP_VERSION }}
+        Version: $APP_VERSION
         Architecture: ${{ env.BUILD_ARCH }}
         Maintainer: Dominik Zarsky <dzarsky@dzarsky.eu>
         Description: A tool for displaying weather forecast in the command line.
