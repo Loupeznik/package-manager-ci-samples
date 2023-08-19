@@ -1,0 +1,48 @@
+name: APT repo publish
+
+on:
+  push:
+    tags: [ "v*" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Create .deb
+    runs-on: ubuntu-latest
+    env:
+      APP_NAME: 'whatstheweather'
+      APP_VERSION: ${{ github.ref_name }}
+      BUILD_ARCH: 'amd64'
+
+    steps:
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v2.1.1
+      with:
+        name: build
+        path: output
+
+    - name: Create deb
+      run: |
+        APP_ID=${{ env.APP_NAME }}_${{ env.APP_VERSION }}_${{ env.BUILD_ARCH }}
+        TMP_DIR=/tmp/$APP_ID
+        APP_DIR=$TMP_DIR/usr/local/bin/${{ env.APP_NAME }}
+        mkdir -p $APP_DIR
+        cp output/${{ env.APP_NAME }} $APP_DIR
+        mkdir $TMP_DIR/DEBIAN
+        
+        cat <<EOF > $TMP_DIR/DEBIAN/control
+        Package: ${{ env.APP_NAME }}
+        Version: ${{ env.APP_VERSION }}
+        Architecture: ${{ env.BUILD_ARCH }}
+        Maintainer: Dominik Zarsky <dzarsky@dzarsky.eu>
+        Description: A tool for displaying weather forecast in the command line.
+        EOF
+
+        dpkg-deb --build --root-owner-group $APP_ID
+
+    - name: Publish artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: deb
+        path: |
+          /tmp/**/*.deb
