@@ -15,11 +15,15 @@ jobs:
       BUILD_ARCH: 'amd64'
 
     steps:
-    - name: Download Build Artifact
-      uses: actions/download-artifact@v2.1.1
+    - name: Download artifact
+      id: download-artifact
+      uses: dawidd6/action-download-artifact@v2
       with:
         name: build
+        workflow: ci.yml
+        commit: ${{ vars.GITHUB_SHA }}
         path: output
+        search_artifacts: true
 
     - name: Create deb
       run: |
