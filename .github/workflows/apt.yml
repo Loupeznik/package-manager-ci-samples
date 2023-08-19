@@ -49,6 +49,7 @@ jobs:
         Description: A tool for displaying weather forecast in the command line.
         EOF
 
+        chmod +x $APP_DIR/${{ env.APP_NAME }}
         dpkg-deb --build --root-owner-group $TMP_DIR
 
     - name: Publish artifact
