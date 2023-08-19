@@ -34,7 +34,7 @@ jobs:
       run: |
         REF=${{ github.ref_name }}
         APP_VERSION=${REF//v/}
-        APP_ID=${{ env.APP_NAME }}_$APP_VERSION_${{ env.BUILD_ARCH }}
+        APP_ID=${{ env.APP_NAME }}_${APP_VERSION}_${{ env.BUILD_ARCH }}
         TMP_DIR=/tmp/$APP_ID
         APP_DIR=$TMP_DIR/usr/local/bin/${{ env.APP_NAME }}
         mkdir -p $APP_DIR
@@ -56,4 +56,4 @@ jobs:
       with:
         name: deb
         path: |
-          /tmp/**/*.deb
+          /tmp/*.deb
