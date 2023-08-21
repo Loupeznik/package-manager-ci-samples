@@ -94,7 +94,7 @@ jobs:
             export GPG_TTY
 
             cd /opt/repo/apt
-            cp /tmp/*.deb amd64
+            cp /tmp/dist/*.deb amd64
 
             dpkg-scanpackages --arch amd64 --multiversion . > Packages
             gzip -k -f Packages
@@ -105,4 +105,4 @@ jobs:
             chmod 600 /tmp/gpg_secret
             gpg --pinentry-mode loopback --passphrase-file "/tmp/gpg_secret" --yes -abs -u ${{ SECRETS.GPG_KEY_ID }} -o Release.gpg Release
             rm /tmp/gpg_secret
-            rm /tmp/*.deb
+            rm -rf /tmp/dist
