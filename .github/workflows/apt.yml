@@ -58,3 +58,51 @@ jobs:
         name: deb
         path: |
           /tmp/*.deb
+
+  publish:
+    name: Publish deb
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download artifact
+      id: download-artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: deb
+        path: dist
+
+    - name: copy file via ssh password
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.REPO_SERVER_HOSTNAME }}
+        username: ${{ secrets.REPO_SERVER_USERNAME }}
+        key: ${{ secrets.REPO_SERVER_SSH_KEY }}
+        port: 22
+        source: dist/*.deb
+        target: /tmp
+
+    - name: Publish package
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.REPO_SERVER_HOSTNAME }}
+        username: ${{ secrets.REPO_SERVER_USERNAME }}
+        key: ${{ secrets.REPO_SERVER_SSH_KEY }}
+        port: 22
+        script: |
+            GPG_TTY=$(tty)
+            export GPG_TTY
+
+            cd /opt/repo/apt
+            cp /tmp/*.deb amd64
+
+            dpkg-scanpackages --arch amd64 --multiversion . > Packages
+            gzip -k -f Packages
+
+            apt-ftparchive release . > Release
+
+            echo ${{ secrets.GPG_KEY_PASSPHRASE }} > /tmp/gpg_secret
+            chmod 600 /tmp/gpg_secret
+            gpg --pinentry-mode loopback --passphrase-file "/tmp/gpg_secret" --yes -abs -u ${{ SECRETS.GPG_KEY_ID }} -o Release.gpg Release
+            rm /tmp/gpg_secret
+            rm /tmp/*.deb
