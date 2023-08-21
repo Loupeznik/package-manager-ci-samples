@@ -72,7 +72,7 @@ jobs:
         name: deb
         path: dist
 
-    - name: copy file via ssh password
+    - name: Copy artifact to repo server
       uses: appleboy/scp-action@v0.1.4
       with:
         host: ${{ secrets.REPO_SERVER_HOSTNAME }}
