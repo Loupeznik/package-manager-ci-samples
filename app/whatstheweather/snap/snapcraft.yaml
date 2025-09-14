@@ -1,0 +1,34 @@
+name: whatstheweather
+base: core20
+version: '0.9.5'
+summary: A tool for displaying weather forecast in the command line
+license: MIT
+contact: contact@dzarsky.eu
+issues: https://github.com/Loupeznik/package-manager-ci-samples/issues
+website: https://github.com/Loupeznik/package-manager-ci-samples
+source-code: https://github.com/Loupeznik/package-manager-ci-samples/tree/master/app/whatstheweather
+description: |
+  A tool for displaying weather forecast in the command line using Open Weather API.
+
+grade: stable
+confinement: strict
+
+architectures:
+  - build-on: [arm64, amd64]
+
+apps:
+  whatstheweather:
+    command: bin/whatstheweather
+    plugs:
+      - home
+
+parts:
+  whatstheweather:
+    plugin: rust
+    source: .
+    build-packages:
+      - cargo
+      - libssl-dev
+      - build-essential
+      - ca-certificates
+      - pkg-config

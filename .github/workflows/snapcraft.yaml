@@ -1,0 +1,26 @@
+name: Publish Snap to Snap Store
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_CREDENTIALS }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build Snap
+        id: build
+        uses: snapcore/action-build@master
+        with:
+          path: app/whatstheweather
+
+      - name: Publish Snap to Snap Store
+        uses: snapcore/action-publish@master
+        with:
+          store_login: ${{ secrets.SNAPCRAFT_CREDENTIALS }}
+          snap: ${{ steps.build.outputs.snap }}
+          release: stable
